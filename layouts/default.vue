@@ -7,7 +7,7 @@
       </div>
     </nav>
 
-    <!-- Inloggat läge -->
+    <!-- Rendera inloggat läge -->
     <main>
       <NuxtPage />
     </main>
@@ -15,19 +15,9 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { useStorage } from "@vueuse/core";
+import { useAuth } from "~~/composables/useAuth"; // Importera auth composable
 
-// Hämta token från localStorage (via VueUse)
-const token = useStorage("token", "");
-
-const router = useRouter();
-
-// Logga ut-funktion: ta bort token och navigera till login
-const logout = () => {
-  token.value = "";
-  router.push("/");
-};
+const { logout } = useAuth(); // Använd auth composable för att hantera logout
 </script>
 
 <style scoped></style>

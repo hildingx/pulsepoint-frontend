@@ -21,50 +21,11 @@
 </template>
 
 <script setup lang="ts">
-import { useStorage } from "@vueuse/core";
-import { useRouter } from "vue-router";
-import { ref, computed } from "vue";
-
-interface UserData {
-  id: number;
-  userName: string;
-  firstName: string;
-  lastName: string;
-  workplaceId: number;
-  roles: string[];
-}
+import { useUser } from "~~/composables/useUser"; // Importera auth composable
 
 definePageMeta({
   layout: "default",
 });
 
-const router = useRouter();
-const token = useStorage("token", "");
-
-// Om ingen token finns – redirecta direkt
-if (!token.value) {
-  router.push("/");
-}
-
-// useFetch körs automatiskt och hämtar användarinfo
-const { data, pending, error } = await useFetch<UserData>(
-  "http://localhost:5036/api/auth/me",
-  {
-    headers: {
-      Authorization: `Bearer ${token.value}`,
-    },
-    // Förhindra SSR, eftersom token bara finns i localStorage
-    server: false,
-  }
-);
-
-// Redirecta till login om error uppstår
-watch(error, (err) => {
-  if (err) {
-    router.push("/");
-  }
-});
-
-// Skapa en computed för enkel åtkomst till användardata
-const user = computed(() => data.value);
+const { user, pending, error } = useUser(); // Använd auth composable för att hämta användardata
 </script>

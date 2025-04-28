@@ -59,16 +59,27 @@ const firstName = ref("");
 const lastName = ref("");
 const workplaceId = ref<number | "">("");
 
-// Feedback
-const error = ref("");
-const success = ref(false);
+const { register, registerSuccess: success, registerError: error } = useAuth();
 
-// Hämta arbetsplatser
+const handleRegister = () => {
+  if (!workplaceId.value) return;
+
+  register({
+    username: username.value,
+    password: password.value,
+    firstName: firstName.value,
+    lastName: lastName.value,
+    workplaceId: workplaceId.value,
+  });
+};
+
+// Typ för arbetsplatser
 interface Workplace {
   id: number;
   name: string;
 }
 
+// Hämta arbetsplatser
 const { data: workplacesData } = await useFetch<Workplace[]>(
   "http://localhost:5036/api/workplaces",
   {
@@ -77,27 +88,4 @@ const { data: workplacesData } = await useFetch<Workplace[]>(
 );
 
 const workplaces = computed(() => workplacesData.value ?? []);
-
-// Registrera användare
-const handleRegister = async () => {
-  try {
-    await $fetch("http://localhost:5036/api/auth/register", {
-      method: "POST",
-      body: {
-        username: username.value,
-        password: password.value,
-        firstName: firstName.value,
-        lastName: lastName.value,
-        workplaceId: workplaceId.value,
-      },
-    });
-
-    success.value = true;
-    error.value = "";
-  } catch (err) {
-    error.value = "Registrering misslyckades. Kontrollera uppgifterna.";
-    success.value = false;
-    console.error(err);
-  }
-};
 </script>

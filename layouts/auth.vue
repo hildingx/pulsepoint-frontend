@@ -1,7 +1,9 @@
 <template>
   <div>
-    <!-- Här visas innehållet från den index som använder denna layout -->
-    <NuxtPage />
+    <!-- Rendera utloggat läge -->
+    <main>
+      <NuxtPage />
+    </main>
   </div>
 </template>
 
