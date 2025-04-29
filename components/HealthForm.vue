@@ -1,8 +1,15 @@
 <template>
   <div>
-    <h3>Ny hälsoregistrering</h3>
+    <div v-if="success">
+      <h3>Tack för din registrering!</h3>
+      <p>
+        Fantastiskt jobbat - fortsätt hålla koll på ditt välmående. Vi ses
+        imorgon!
+      </p>
+    </div>
 
-    <form @submit.prevent="handleSubmit">
+    <form v.else @submit.prevent="handleSubmit">
+      <h3>Ny hälsoregistrering</h3>
       <div>
         <label>Humör (1-5):</label>
         <input type="number" v-model.number="mood" min="1" max="5" required />
@@ -43,7 +50,6 @@
       <button type="submit">Spara</button>
     </form>
 
-    <p v-if="success" style="color: green">Registrering sparad!</p>
     <p v-if="error" style="color: red">{{ error }}</p>
   </div>
 </template>
@@ -62,6 +68,10 @@ const nutrition = ref(3);
 
 const success = ref(false);
 const error = ref("");
+
+const emit = defineEmits<{
+  (e: "submitted"): void;
+}>();
 
 const handleSubmit = async () => {
   try {
@@ -86,6 +96,9 @@ const handleSubmit = async () => {
     stress.value = 3;
     activity.value = 3;
     nutrition.value = 3;
+
+    success.value = true;
+    error.value = "";
   } catch (err) {
     success.value = false;
     error.value = "Kunde inte spara registreringen.";

@@ -18,7 +18,13 @@
       Din roll är: {{ user.roles.join(", ") }}
     </p>
 
-    <HealthForm />
+    <div v-if="hasSubmittedToday">
+      <h3>Fantastiskt jobbat!</h3>
+      <p>Du har redan registrerat din hälsa för idag. Vi ses imorgon igen!</p>
+    </div>
+    <div v-else>
+      <HealthForm />
+    </div>
 
     <HealthEntryList
       :entries="entries"
@@ -30,6 +36,7 @@
 
 <script setup lang="ts">
 import { useUser } from "~~/composables/useUser"; // Importera auth composable
+import { useTodayEntry } from "@/composables/useTodayEntry";
 import HealthForm from "@/components/HealthForm.vue"; // Importera komponenten
 import HealthEntryList from "@/components/HealthEntryList.vue"; // Importera komponenten
 
@@ -43,4 +50,6 @@ const {
   pending: entriesPending,
   error: entriesError,
 } = await useHealthEntries();
+
+const { hasSubmittedToday } = useTodayEntry(entries); // Använd composable för att kolla om användaren har registrerat sin hälsa idag
 </script>
