@@ -17,6 +17,7 @@
 
       <button type="submit">Logga in</button>
     </form>
+    <p>Inget konto? Registrera dig <NuxtLink to="/register">här</NuxtLink></p>
 
     <p v-if="error">{{ error }}</p>
   </div>

@@ -4,7 +4,7 @@ import type { HealthEntry } from "~/types/healthEntry";
 export async function useHealthEntries() {
   const token = useStorage("token", "");
 
-  const { data, pending, error } = await useLazyFetch<HealthEntry[]>(
+  const { data, pending, refresh, error } = await useLazyFetch<HealthEntry[]>(
     "http://localhost:5036/api/healthentries",
     {
       headers: {
@@ -17,6 +17,7 @@ export async function useHealthEntries() {
   return {
     entries: data,
     pending,
+    refresh,
     error,
   };
 }

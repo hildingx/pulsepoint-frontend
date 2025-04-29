@@ -20,17 +20,43 @@
 
     <div v-if="hasSubmittedToday">
       <h3>Fantastiskt jobbat!</h3>
-      <p>Du har redan registrerat din hälsa för idag. Vi ses imorgon igen!</p>
+      <p>Du har registrerat din hälsa för idag. Vi ses imorgon igen!</p>
     </div>
     <div v-else>
-      <HealthForm />
+      <HealthForm @submitted="refreshEntries" />
     </div>
 
-    <HealthEntryList
-      :entries="entries"
-      :pending="entriesPending"
-      :error="entriesError"
-    />
+    <div>
+      <HealthGraph
+        :entries="entries ?? []"
+        valueKey="mood"
+        title="Humör över tid"
+      />
+
+      <HealthGraph
+        :entries="entries ?? []"
+        valueKey="sleep"
+        title="Sömn över tid"
+      />
+
+      <HealthGraph
+        :entries="entries ?? []"
+        valueKey="stress"
+        title="Stress över tid"
+      />
+
+      <HealthGraph
+        :entries="entries ?? []"
+        valueKey="activity"
+        title="Fysisk aktivitet över tid"
+      />
+
+      <HealthGraph
+        :entries="entries ?? []"
+        valueKey="nutrition"
+        title="Kost över tid"
+      />
+    </div>
   </div>
 </template>
 
@@ -49,7 +75,12 @@ const {
   entries,
   pending: entriesPending,
   error: entriesError,
+  refresh,
 } = await useHealthEntries();
+
+const refreshEntries = async () => {
+  await refresh(); // <-- från useFetch
+};
 
 const { hasSubmittedToday } = useTodayEntry(entries); // Använd composable för att kolla om användaren har registrerat sin hälsa idag
 </script>

@@ -37,7 +37,7 @@
     </form>
 
     <p v-if="success" style="color: green">
-      Kontot har skapats! Du kan nu logga in.
+      Kontot har skapats! Du kan nu <NuxtLink to="/">logga in.</NuxtLink>
     </p>
 
     <p v-if="error" style="color: red">{{ error }}</p>

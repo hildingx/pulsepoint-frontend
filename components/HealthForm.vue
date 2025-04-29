@@ -1,14 +1,6 @@
 <template>
   <div>
-    <div v-if="success">
-      <h3>Tack för din registrering!</h3>
-      <p>
-        Fantastiskt jobbat - fortsätt hålla koll på ditt välmående. Vi ses
-        imorgon!
-      </p>
-    </div>
-
-    <form v.else @submit.prevent="handleSubmit">
+    <form @submit.prevent="handleSubmit">
       <h3>Ny hälsoregistrering</h3>
       <div>
         <label>Humör (1-5):</label>
@@ -99,6 +91,8 @@ const handleSubmit = async () => {
 
     success.value = true;
     error.value = "";
+
+    emit("submitted");
   } catch (err) {
     success.value = false;
     error.value = "Kunde inte spara registreringen.";
