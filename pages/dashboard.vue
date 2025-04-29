@@ -18,6 +18,8 @@
       Din roll är: {{ user.roles.join(", ") }}
     </p>
 
+    <HealthForm />
+
     <HealthEntryList
       :entries="entries"
       :pending="entriesPending"
@@ -28,6 +30,7 @@
 
 <script setup lang="ts">
 import { useUser } from "~~/composables/useUser"; // Importera auth composable
+import HealthForm from "@/components/HealthForm.vue"; // Importera komponenten
 import HealthEntryList from "@/components/HealthEntryList.vue"; // Importera komponenten
 
 definePageMeta({
