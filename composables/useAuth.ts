@@ -25,7 +25,7 @@ export function useAuth() {
       token.value = res.token;
       error.value = "";
       await nextTick();
-      router.push("/dashboard");
+      navigateTo("/dashboard");
     } catch (err) {
       error.value = "Inloggning misslyckades. Kontrollera dina uppgifter.";
       console.error(err);

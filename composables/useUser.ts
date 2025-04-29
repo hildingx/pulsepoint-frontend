@@ -1,14 +1,12 @@
 // composables/useUser.ts
 import { useStorage } from "@vueuse/core";
-import { useRouter } from "vue-router";
 import { computed, watch } from "vue";
 import type { UserData } from "@/types/auth";
 
-export function useUser() {
+export async function useUser() {
   const token = useStorage("token", "");
-  const router = useRouter();
 
-  const { data, pending, error } = useFetch<UserData>(
+  const { data, pending, error } = await useLazyFetch<UserData>(
     "http://localhost:5036/api/auth/me",
     {
       method: "GET",
@@ -23,7 +21,7 @@ export function useUser() {
   watch(error, (err) => {
     if (err) {
       token.value = "";
-      router.push("/");
+      navigateTo("/");
     }
   });
 
