@@ -1,6 +1,7 @@
 // composables/useAuth.ts
 import { useStorage } from "@vueuse/core";
 import type { UserData } from "~/types/auth"; // Importera UserData-typ
+import type { HealthEntry } from "@/types/healthEntry";
 
 export function useAuth() {
   const token = useStorage("token", "");
@@ -8,6 +9,7 @@ export function useAuth() {
   const registerError = ref("");
   const registerSuccess = ref(false);
   const user = useState<UserData | null>("user", () => null); // Delad global state
+  const entries = useState<HealthEntry[] | null>("entries", () => null);
 
   /**
    * Inloggning – spara token + redirect
@@ -76,6 +78,7 @@ export function useAuth() {
   const logout = () => {
     token.value = "";
     user.value = null; // Rensa användardata vid utloggning
+    entries.value = null; // Töm entrylistan
     navigateTo("/");
   };
 
