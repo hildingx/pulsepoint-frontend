@@ -80,7 +80,9 @@ definePageMeta({
   layout: "default",
 });
 
-const { user, pending: userPending, error: userError } = await useUser(); // Använd auth composable för att hämta användardata
+const { user } = useUser();
+const userPending = computed(() => user.value === null);
+const userError = ref(null);
 const {
   entries,
   pending: entriesPending,

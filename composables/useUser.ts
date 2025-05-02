@@ -1,35 +1,35 @@
 // composables/useUser.ts
 import { useStorage } from "@vueuse/core";
-import { computed, watch } from "vue";
+import { watchEffect } from "vue";
 import type { UserData } from "@/types/auth";
 
-export async function useUser() {
+export function useUser() {
+  const user = useState<UserData | null>("user", () => null);
   const token = useStorage("token", "");
 
-  const { data, pending, error } = await useLazyFetch<UserData>(
-    "http://localhost:5036/api/auth/me",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-      },
-      server: false,
-    }
-  );
-
-  // Om det blir 401 eller annat fel – logga ut användare
-  watch(error, (err) => {
-    if (err) {
-      token.value = "";
-      navigateTo("/");
+  // Hämta användardata endast om det saknas men token finns
+  watchEffect(async () => {
+    if (!user.value && token.value) {
+      try {
+        const res = await $fetch<UserData>(
+          "http://localhost:5036/api/auth/me",
+          {
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+            },
+          }
+        );
+        user.value = res;
+      } catch (err) {
+        console.error("Misslyckades hämta användardata", err);
+        token.value = "";
+        user.value = null;
+        navigateTo("/");
+      }
     }
   });
 
-  const user = computed(() => data.value);
-
   return {
     user,
-    pending,
-    error,
   };
 }

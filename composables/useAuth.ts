@@ -1,11 +1,13 @@
 // composables/useAuth.ts
 import { useStorage } from "@vueuse/core";
+import type { UserData } from "~/types/auth"; // Importera UserData-typ
 
 export function useAuth() {
   const token = useStorage("token", "");
   const error = ref("");
   const registerError = ref("");
   const registerSuccess = ref(false);
+  const user = useState<UserData | null>("user", () => null); // Delad global state
 
   /**
    * Inloggning – spara token + redirect
@@ -22,8 +24,22 @@ export function useAuth() {
 
       token.value = res.token;
       error.value = "";
-      await nextTick();
-      navigateTo("/dashboard");
+
+      // Hämta användardata direkt efter login
+      const userData = await $fetch<UserData>(
+        "http://localhost:5036/api/auth/me",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        }
+      );
+
+      user.value = userData;
+
+      // Använd SPA-redirect
+      await navigateTo("/dashboard");
     } catch (err) {
       error.value = "Inloggning misslyckades. Kontrollera dina uppgifter.";
       console.error(err);
@@ -59,6 +75,7 @@ export function useAuth() {
   // Logga ut: ta bort token och redirecta till login
   const logout = () => {
     token.value = "";
+    user.value = null; // Rensa användardata vid utloggning
     navigateTo("/");
   };
 
@@ -71,5 +88,6 @@ export function useAuth() {
     register,
     registerError,
     registerSuccess,
+    user,
   };
 }
