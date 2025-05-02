@@ -2,6 +2,14 @@
   <div>
     <nav>
       <div>
+        <ul>
+          <li>
+            <NuxtLink to="/dashboard">Hem</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="/graphs">Statistik</NuxtLink>
+          </li>
+        </ul>
         <h1>PulsePoint</h1>
 
         <!-- Visa användarnamn -->
