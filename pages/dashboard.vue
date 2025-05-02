@@ -64,4 +64,5 @@ const refreshEntries = async () => {
 
 // Dagens entry
 const { hasSubmittedToday } = useTodayEntry(entries);
+console.log(entries);
 </script>

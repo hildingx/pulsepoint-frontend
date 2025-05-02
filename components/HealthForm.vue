@@ -1,49 +1,40 @@
 <template>
-  <div>
-    <form @submit.prevent="handleSubmit">
-      <h3>Ny hälsoregistrering</h3>
-      <div>
-        <label>Humör (1-5):</label>
-        <input type="number" v-model.number="mood" min="1" max="5" required />
-      </div>
+  <form @submit.prevent="handleSubmit">
+    <h3>Ny hälsoregistrering</h3>
 
-      <div>
-        <label>Sömn (1-5):</label>
-        <input type="number" v-model.number="sleep" min="1" max="5" required />
-      </div>
+    <div>
+      <label>Humör: {{ mood }}</label>
+      <input type="range" v-model.number="mood" min="1" max="5" />
+      <p>Låg energi eller motivation = 1, positivt och energifylld = 5</p>
+    </div>
 
-      <div>
-        <label>Stress (1-5):</label>
-        <input type="number" v-model.number="stress" min="1" max="5" required />
-      </div>
+    <div>
+      <label>Sömn: {{ sleep }}</label>
+      <input type="range" v-model.number="sleep" min="1" max="5" />
+      <p>Orolig eller otillräcklig sömn = 1, utvilad = 5</p>
+    </div>
 
-      <div>
-        <label>Fysisk aktivitet (1-5):</label>
-        <input
-          type="number"
-          v-model.number="activity"
-          min="1"
-          max="5"
-          required
-        />
-      </div>
+    <div>
+      <label>Stress: {{ stress }}</label>
+      <input type="range" v-model.number="stress" min="1" max="5" />
+      <p>Mycket stress = 1, lugn och fokuserad = 5</p>
+    </div>
 
-      <div>
-        <label>Kost (1-5):</label>
-        <input
-          type="number"
-          v-model.number="nutrition"
-          min="1"
-          max="5"
-          required
-        />
-      </div>
+    <div>
+      <label>Fysisk aktivitet: {{ activity }}</label>
+      <input type="range" v-model.number="activity" min="1" max="5" />
+      <p>Inte rört dig alls = 1, mycket rörelse/träning = 5</p>
+    </div>
 
-      <button type="submit">Spara</button>
-    </form>
+    <div>
+      <label>Kost: {{ nutrition }}</label>
+      <input type="range" v-model.number="nutrition" min="1" max="5" />
+      <p>Oregelbundet/onyttigt = 1, balanserat och näringsrikt = 5</p>
+    </div>
 
+    <button type="submit">Spara</button>
     <p v-if="error" style="color: red">{{ error }}</p>
-  </div>
+  </form>
 </template>
 
 <script setup lang="ts">
@@ -58,7 +49,6 @@ const stress = ref(3);
 const activity = ref(3);
 const nutrition = ref(3);
 
-const success = ref(false);
 const error = ref("");
 
 const emit = defineEmits<{
@@ -80,21 +70,10 @@ const handleSubmit = async () => {
         nutrition: nutrition.value,
       },
     });
-    success.value = true;
-    error.value = "";
-    // Återställ formulär
-    mood.value = 3;
-    sleep.value = 3;
-    stress.value = 3;
-    activity.value = 3;
-    nutrition.value = 3;
 
-    success.value = true;
     error.value = "";
-
     emit("submitted");
   } catch (err) {
-    success.value = false;
     error.value = "Kunde inte spara registreringen.";
     console.error(err);
   }
