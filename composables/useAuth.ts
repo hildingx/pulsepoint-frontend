@@ -1,10 +1,8 @@
 // composables/useAuth.ts
 import { useStorage } from "@vueuse/core";
-import { useRouter } from "vue-router";
 
 export function useAuth() {
   const token = useStorage("token", "");
-  const router = useRouter();
   const error = ref("");
   const registerError = ref("");
   const registerSuccess = ref(false);
@@ -61,7 +59,7 @@ export function useAuth() {
   // Logga ut: ta bort token och redirecta till login
   const logout = () => {
     token.value = "";
-    router.push("/");
+    navigateTo("/");
   };
 
   // Returnera allt vi vill exponera

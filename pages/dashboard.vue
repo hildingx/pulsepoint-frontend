@@ -8,60 +8,70 @@
     <!-- Fel -->
     <p v-else-if="userError">Något gick fel: {{ error.message }}</p>
 
-    <!-- Visa användarnamn -->
-    <p v-else-if="user">
-      Inloggad som: {{ user.userName }}
-      <br />
-      Ditt namn är: {{ user.firstName }}
-      {{ user.lastName }}
-      <br />
-      Din roll är: {{ user.roles.join(", ") }}
-    </p>
+    <template v-if="!userPending && user">
+      <!-- Visa managers egen dashboard direkt -->
+      <div v-if="isManager">
+        <h3>Statistik för din arbetsplats (manager)</h3>
+        <!-- managerdata -->
+      </div>
 
-    <div v-if="hasSubmittedToday">
-      <h3>Fantastiskt jobbat!</h3>
-      <p>Du har registrerat din hälsa för idag. Vi ses imorgon igen!</p>
-    </div>
-    <div v-else>
-      <HealthForm @submitted="refreshEntries" />
-    </div>
+      <!-- Visa användarvy först när data är laddad -->
+      <!-- Vänta tills entries är laddade -->
+      <template v-else-if="!entriesPending">
+        <div v-if="hasSubmittedToday">
+          <h3>Fantastiskt jobbat!</h3>
+          <p>Du har registrerat din hälsa för idag. Vi ses imorgon igen!</p>
+        </div>
+        <div v-else>
+          <HealthForm @submitted="refreshEntries" />
+        </div>
 
-    <div>
-      <HealthGraph
-        :entries="entries ?? []"
-        valueKey="mood"
-        title="Humör över tid"
-      />
+        <div>
+          <h3>Din hälsodata</h3>
 
-      <HealthGraph
-        :entries="entries ?? []"
-        valueKey="sleep"
-        title="Sömn över tid"
-      />
+          <select v-model="selectedRange">
+            <option value="7">Senaste veckan</option>
+            <option value="30">Senaste månaden</option>
+            <option value="365">Senaste året</option>
+          </select>
+          <br />
+          <HealthGraph
+            :entries="sortedFilteredEntries ?? []"
+            valueKey="mood"
+            title="Humör över tid"
+          />
 
-      <HealthGraph
-        :entries="entries ?? []"
-        valueKey="stress"
-        title="Stress över tid"
-      />
+          <HealthGraph
+            :entries="sortedFilteredEntries ?? []"
+            valueKey="sleep"
+            title="Sömn över tid"
+          />
 
-      <HealthGraph
-        :entries="entries ?? []"
-        valueKey="activity"
-        title="Fysisk aktivitet över tid"
-      />
+          <HealthGraph
+            :entries="sortedFilteredEntries ?? []"
+            valueKey="stress"
+            title="Stress över tid"
+          />
 
-      <HealthGraph
-        :entries="entries ?? []"
-        valueKey="nutrition"
-        title="Kost över tid"
-      />
-    </div>
+          <HealthGraph
+            :entries="sortedFilteredEntries ?? []"
+            valueKey="activity"
+            title="Fysisk aktivitet över tid"
+          />
+
+          <HealthGraph
+            :entries="sortedFilteredEntries ?? []"
+            valueKey="nutrition"
+            title="Kost över tid"
+          />
+        </div>
+      </template>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useUser } from "~~/composables/useUser"; // Importera auth composable
+import { useUser } from "@/composables/useUser"; // Importera auth composable
 import { useTodayEntry } from "@/composables/useTodayEntry";
 import HealthForm from "@/components/HealthForm.vue"; // Importera komponenten
 import HealthEntryList from "@/components/HealthEntryList.vue"; // Importera komponenten
@@ -78,9 +88,31 @@ const {
   refresh,
 } = await useHealthEntries();
 
+const isManager = computed(() => user.value?.roles.includes("manager"));
+
 const refreshEntries = async () => {
   await refresh(); // <-- från useFetch
 };
+
+const selectedRange = ref(30); // default: 30 dagar
+
+const sortedFilteredEntries = computed(() => {
+  const allEntries = entries.value ?? [];
+
+  // Filtrera på valt intervall (t.ex. 7 dagar)
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - selectedRange.value);
+
+  const filtered = allEntries.filter((entry) => {
+    const entryDate = new Date(entry.date);
+    return entryDate >= cutoff;
+  });
+
+  // Sortera på datum (äldst först)
+  return filtered.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+});
 
 const { hasSubmittedToday } = useTodayEntry(entries); // Använd composable för att kolla om användaren har registrerat sin hälsa idag
 </script>

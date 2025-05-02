@@ -17,7 +17,7 @@ export async function useUser() {
     }
   );
 
-  // Om det blir 401 eller annat fel – logga ut användaren
+  // Om det blir 401 eller annat fel – logga ut användare
   watch(error, (err) => {
     if (err) {
       token.value = "";
