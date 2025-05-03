@@ -13,11 +13,11 @@
       <!-- Manager-vy -->
       <div v-if="isManager">
         <h3>Statistik för din arbetsplats (manager)</h3>
-        <!-- (Här ska managerdata visas – kommer senare) -->
+        <ManagerStats />
       </div>
 
       <!-- Användarvy -->
-      <template v-else-if="!entriesPending">
+      <template v-else-if="entriesReady">
         <div v-if="hasSubmittedToday">
           <h3>Fantastiskt jobbat!</h3>
           <p>Du har registrerat din hälsa för idag. Vi ses imorgon igen!</p>
@@ -54,6 +54,10 @@ const {
   refresh,
 } = await useHealthEntries();
 
+const entriesReady = computed(
+  () => !entriesPending.value && entries.value !== null
+);
+
 // Rollcheck
 const isManager = computed(() => user.value?.roles.includes("manager"));
 
@@ -64,5 +68,4 @@ const refreshEntries = async () => {
 
 // Dagens entry
 const { hasSubmittedToday } = useTodayEntry(entries);
-console.log(entries);
 </script>

@@ -2,7 +2,8 @@
   <div>
     <h2>Dina hälsografer</h2>
 
-    <select v-model="selectedRange">
+    <label for="dateRange">Välj tidsintervall:</label>
+    <select v-model="selectedRange" id="dateRange" name="dateRange">
       <option value="7">Senaste veckan</option>
       <option value="30">Senaste månaden</option>
       <option value="365">Senaste året</option>

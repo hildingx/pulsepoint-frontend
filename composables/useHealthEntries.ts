@@ -5,14 +5,13 @@ export async function useHealthEntries() {
   const token = useStorage("token", "");
   const entries = useState<HealthEntry[] | null>("entries", () => null);
 
-  const { pending, refresh, error } = await useLazyFetch<HealthEntry[]>(
+  const { pending, refresh, error } = useLazyFetch<HealthEntry[]>(
     "http://localhost:5036/api/healthentries",
     {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
       server: false,
-      immediate: false,
       onResponse({ response }) {
         entries.value = response._data;
       },
