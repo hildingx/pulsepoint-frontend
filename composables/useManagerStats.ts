@@ -1,12 +1,5 @@
 // composables/useManagerStats.ts
-interface DailyStat {
-  date: string;
-  averageMood: number;
-  averageSleep: number;
-  averageStress: number;
-  averageActivity: number;
-  averageNutrition: number;
-}
+import type { DailyStat } from "~/types/dailyStat";
 
 export async function useManagerStats(token: Ref<string>) {
   const { data, pending, error, refresh } = await useLazyFetch<DailyStat[]>(

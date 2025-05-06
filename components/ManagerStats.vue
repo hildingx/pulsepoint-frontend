@@ -14,7 +14,7 @@
       <HealthGraph
         v-for="key in keys"
         :key="key"
-        :entries="filteredStats"
+        :entries="graphStats"
         :valueKey="key"
         :title="titles[key]"
       />
@@ -23,10 +23,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
 import { useStorage } from "@vueuse/core";
 import { useManagerStats } from "@/composables/useManagerStats";
 import HealthGraph from "@/components/HealthGraph.vue";
+import type { HealthEntry } from "@/types/healthEntry";
 
 // Token krävs för fetch
 const token = useStorage("token", "");
@@ -34,27 +34,34 @@ const selectedRange = ref(30);
 
 const { stats, pending, error } = await useManagerStats(token);
 
-// Nycklar och titlar för grafer
-const keys = [
-  "averageMood",
-  "averageSleep",
-  "averageStress",
-  "averageActivity",
-  "averageNutrition",
-] as const;
-const titles = {
-  averageMood: "Humör (snitt)",
-  averageSleep: "Sömn (snitt)",
-  averageStress: "Stress (snitt)",
-  averageActivity: "Aktivitet (snitt)",
-  averageNutrition: "Kost (snitt)",
+// Ange HealthEntry-kompatibla nycklar
+const keys = ["mood", "sleep", "stress", "activity", "nutrition"] as const;
+type Key = (typeof keys)[number];
+const titles: Record<Key, string> = {
+  mood: "Humör (snitt)",
+  sleep: "Sömn (snitt)",
+  stress: "Stress (snitt)",
+  activity: "Aktivitet (snitt)",
+  nutrition: "Kost (snitt)",
 };
 
-// Filtrera senaste X dagar
-const filteredStats = computed(() => {
+// Mappa och filtrera stats → HealthEntry[]
+const graphStats = computed<HealthEntry[]>(() => {
   if (!stats.value) return [];
+
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - selectedRange.value);
-  return stats.value.filter((s) => new Date(s.date) >= cutoff);
+
+  return stats.value
+    .filter((s) => new Date(s.date) >= cutoff)
+    .map((s, i) => ({
+      id: i,
+      mood: s.averageMood,
+      sleep: s.averageSleep,
+      stress: s.averageStress,
+      activity: s.averageActivity,
+      nutrition: s.averageNutrition,
+      date: s.date,
+    }));
 });
 </script>

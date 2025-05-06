@@ -37,7 +37,7 @@
 import { useAuth } from "~~/composables/useAuth"; // Importera auth composable
 import { useUser } from "~~/composables/useUser";
 
-const { user, pending: userPending, error: userError } = await useUser();
+const { user } = await useUser();
 const { logout } = useAuth(); // Använd auth composable för att hantera logout
 </script>
 
