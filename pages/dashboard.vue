@@ -46,6 +46,10 @@ const entries = ref<{ date: string }[]>([]);
 const hasSubmittedToday = ref(false);
 const entriesLoading = ref(true);
 
+if (!token.value) {
+  navigateTo("/");
+}
+
 async function fetchEntries() {
   entriesLoading.value = true;
   // om ingen token, töm och avbryt

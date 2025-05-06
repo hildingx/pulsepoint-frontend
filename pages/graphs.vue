@@ -41,10 +41,15 @@
 import { ref, computed } from "vue";
 import HealthGraph from "@/components/HealthGraph.vue";
 import { useHealthEntries } from "@/composables/useHealthEntries";
+const { token } = useUser();
 
 definePageMeta({
   layout: "default",
 });
+
+if (!token.value) {
+  navigateTo("/");
+}
 
 const { entries, pending, error } = await useHealthEntries();
 const selectedRange = ref(30); // Standard: senaste månaden

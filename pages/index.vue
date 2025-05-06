@@ -24,12 +24,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useAuth } from "~~/composables/useAuth"; // Importera auth composable
+const { token } = useUser();
 
 definePageMeta({
   layout: "auth",
 });
+
+if (token.value) {
+  navigateTo("/dashboard");
+}
 
 const username = ref("");
 const password = ref("");
