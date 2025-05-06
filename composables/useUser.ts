@@ -31,5 +31,6 @@ export function useUser() {
 
   return {
     user,
+    token,
   };
 }

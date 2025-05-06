@@ -1,7 +1,6 @@
 // composables/useAuth.ts
 import { useStorage } from "@vueuse/core";
 import type { UserData } from "~/types/auth"; // Importera UserData-typ
-import type { HealthEntry } from "@/types/healthEntry";
 
 export function useAuth() {
   const token = useStorage("token", "");
@@ -9,13 +8,10 @@ export function useAuth() {
   const registerError = ref("");
   const registerSuccess = ref(false);
   const user = useState<UserData | null>("user", () => null); // Delad global state
-  const entries = useState<HealthEntry[] | null>("entries", () => null);
 
-  /**
-   * Inloggning – spara token + redirect
-   */
   const login = async (username: string, password: string) => {
     try {
+      // Logga in och spara token
       const res = await $fetch<{ token: string }>(
         "http://localhost:5036/api/auth/login",
         {
@@ -27,7 +23,7 @@ export function useAuth() {
       token.value = res.token;
       error.value = "";
 
-      // Hämta användardata direkt efter login
+      // Hämta användardata direkt
       const userData = await $fetch<UserData>(
         "http://localhost:5036/api/auth/me",
         {
@@ -37,10 +33,9 @@ export function useAuth() {
           },
         }
       );
-
       user.value = userData;
 
-      // Använd SPA-redirect
+      // Navigera till dashboard
       await navigateTo("/dashboard");
     } catch (err) {
       error.value = "Inloggning misslyckades. Kontrollera dina uppgifter.";
@@ -78,7 +73,6 @@ export function useAuth() {
   const logout = () => {
     token.value = "";
     user.value = null; // Rensa användardata vid utloggning
-    entries.value = null; // Töm entrylistan
     navigateTo("/");
   };
 
