@@ -1,17 +1,32 @@
 // composables/useAuth.ts
 import { useStorage } from "@vueuse/core";
-import type { UserData } from "~/types/auth"; // Importera UserData-typ
+import { useState } from "#app";
+import type { UserData } from "~/types/auth";
+
+// Typ för registrering
+interface RegisterRequest {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  workplaceId: number;
+}
 
 export function useAuth() {
   const token = useStorage("token", "");
   const error = ref("");
   const registerError = ref("");
   const registerSuccess = ref(false);
-  const user = useState<UserData | null>("user", () => null); // Delad global state
 
-  const login = async (username: string, password: string) => {
+  // Delad global state för inloggad användare
+  const user = useState<UserData | null>("user", () => null);
+
+  /**
+   * Logga in användare och hämta användarinfo
+   */
+  const login = async (username: string, password: string): Promise<void> => {
     try {
-      // Logga in och spara token
+      // Skicka login-request
       const res = await $fetch<{ token: string }>(
         "http://localhost:5036/api/auth/login",
         {
@@ -23,7 +38,24 @@ export function useAuth() {
       token.value = res.token;
       error.value = "";
 
-      // Hämta användardata direkt
+      // Hämta användarinfo efter inloggning
+      await fetchUser();
+
+      // Gå vidare till dashboard
+      await navigateTo("/dashboard");
+    } catch (err: any) {
+      error.value =
+        err?.data?.message ||
+        "Inloggning misslyckades. Kontrollera dina uppgifter.";
+      console.error(err);
+    }
+  };
+
+  /**
+   * Hämta användardata från /auth/me
+   */
+  const fetchUser = async (): Promise<void> => {
+    try {
       const userData = await $fetch<UserData>(
         "http://localhost:5036/api/auth/me",
         {
@@ -34,49 +66,40 @@ export function useAuth() {
         }
       );
       user.value = userData;
-
-      // Navigera till dashboard
-      await navigateTo("/dashboard");
     } catch (err) {
-      error.value = "Inloggning misslyckades. Kontrollera dina uppgifter.";
-      console.error(err);
+      console.error("Kunde inte hämta användardata", err);
+      user.value = null;
     }
   };
 
   /**
-   * Registrera ny användare (POST /auth/register)
+   * Registrera ny användare
    */
-  const register = async (user: {
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    workplaceId: number;
-  }) => {
+  const register = async (data: RegisterRequest): Promise<void> => {
     try {
       await $fetch("http://localhost:5036/api/auth/register", {
         method: "POST",
-        body: user,
+        body: data,
       });
 
       registerSuccess.value = true;
       registerError.value = "";
-    } catch (err) {
-      registerError.value =
-        "Registrering misslyckades. Kontrollera uppgifterna.";
+    } catch (err: any) {
+      registerError.value = err?.data?.message || "Registrering misslyckades.";
       registerSuccess.value = false;
       console.error(err);
     }
   };
 
-  // Logga ut: ta bort token och redirecta till login
-  const logout = () => {
+  /**
+   * Logga ut användaren och töm state
+   */
+  const logout = (): void => {
     token.value = "";
-    user.value = null; // Rensa användardata vid utloggning
+    user.value = null;
     navigateTo("/");
   };
 
-  // Returnera allt vi vill exponera
   return {
     token,
     login,

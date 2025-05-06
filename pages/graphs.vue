@@ -74,7 +74,7 @@ if (!token.value) {
 }
 
 // Hämta hälsodata via composable
-const { entries, pending, error } = await useHealthEntries();
+const { entries, pending, error } = useHealthEntries();
 
 // Vald tidsintervall i dagar (default: 30)
 const selectedRange = ref<number>(30);
