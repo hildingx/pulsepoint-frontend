@@ -1,8 +1,16 @@
 // composables/useManagerStats.ts
 import type { DailyStat } from "~/types/dailyStat";
 
-export async function useManagerStats(token: Ref<string>) {
-  const { data, pending, error, refresh } = await useLazyFetch<DailyStat[]>(
+/**
+ * Hämtar aggregerad hälsostatistik för manager-användare
+ */
+export function useManagerStats(token: Ref<string>) {
+  const {
+    data: stats,
+    pending,
+    error,
+    refresh,
+  } = useLazyFetch<DailyStat[]>(
     "http://localhost:5036/api/healthentries/stats/daily",
     {
       headers: {
@@ -13,7 +21,7 @@ export async function useManagerStats(token: Ref<string>) {
   );
 
   return {
-    stats: data,
+    stats,
     pending,
     error,
     refresh,
