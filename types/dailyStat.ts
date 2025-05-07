@@ -6,4 +6,5 @@ export interface DailyStat {
   averageStress: number;
   averageActivity: number;
   averageNutrition: number;
+  entryCount: number;
 }

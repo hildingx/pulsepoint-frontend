@@ -5,27 +5,40 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, nextTick } from "vue";
+import { onMounted, ref, watch, nextTick, onBeforeUnmount } from "vue";
 import * as d3 from "d3";
 import type { HealthEntry } from "@/types/healthEntry";
 
+// Tillåt endast specifika nycklar från HealthEntry
+type HealthMetricKey = "mood" | "sleep" | "stress" | "activity" | "nutrition";
+
+// Props
 const props = defineProps<{
   entries: HealthEntry[];
-  valueKey: keyof HealthEntry;
+  valueKey: HealthMetricKey;
   title: string;
 }>();
 
+// Referenser och dimensioner
 const svgRef = ref<SVGSVGElement | null>(null);
 const wrapperRef = ref<HTMLDivElement | null>(null);
 const width = ref(400);
 const height = 200;
 
+/**
+ * Ritar grafen i SVG med D3
+ */
 const drawGraph = () => {
   if (!svgRef.value || props.entries.length === 0) return;
 
-  const data = props.entries.map((entry) => ({
+  interface EntryWithCount extends HealthEntry {
+    entryCount?: number; // gör den optional för säkerhets skull
+  }
+
+  const data = (props.entries as EntryWithCount[]).map((entry) => ({
     date: new Date(entry.date),
     value: entry[props.valueKey] as number,
+    count: entry.entryCount ?? 0,
   }));
 
   const svg = d3.select(svgRef.value);
@@ -45,8 +58,9 @@ const drawGraph = () => {
     .line<{ date: Date; value: number }>()
     .x((d) => x(d.date))
     .y((d) => y(d.value))
-    .curve(d3.curveMonotoneX); // mjukare kurvor
+    .curve(d3.curveMonotoneX); // Mjukare kurva
 
+  // Axlar
   svg
     .append("g")
     .attr("transform", `translate(0, ${height - 30})`)
@@ -57,6 +71,7 @@ const drawGraph = () => {
     .attr("transform", `translate(40, 0)`)
     .call(d3.axisLeft(y).ticks(5));
 
+  // Linje
   const path = svg
     .append("path")
     .datum(data)
@@ -65,36 +80,72 @@ const drawGraph = () => {
     .attr("stroke-width", 2)
     .attr("d", line);
 
-  // Animation: linjen ritas från vänster till höger
+  // Animerad inritning
   const totalLength = (path.node() as SVGPathElement).getTotalLength();
 
   path
-    .attr("stroke-dasharray", totalLength + " " + totalLength)
+    .attr("stroke-dasharray", `${totalLength} ${totalLength}`)
     .attr("stroke-dashoffset", totalLength)
     .transition()
     .duration(1000)
     .ease(d3.easeLinear)
     .attr("stroke-dashoffset", 0);
 
+  // Titel
   svg
     .append("text")
     .attr("x", width.value / 2)
     .attr("y", 15)
     .attr("text-anchor", "middle")
     .text(props.title);
+
+  // Visa datapunkter med storlek/tooltip endast om entryCount finns (t.ex. för managers)
+  if (data.some((d) => typeof d.count === "number" && d.count > 0)) {
+    const maxCount = d3.max(data, (d) => d.count) ?? 1;
+
+    const rScale = d3.scaleLinear().domain([1, maxCount]).range([2, 8]);
+
+    // Lägg till visuella datapunkter (cirklar) på linjen, där:
+    // Storleken beror på hur många som svarat (entryCount)
+    // Låg svarsfrekvens (< 5) gör punkten halvtransparent
+    // Tooltip visar antal svar vid hovring
+    svg
+      .selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", (d) => x(d.date))
+      .attr("cy", (d) => y(d.value))
+      .attr("r", (d) => rScale(d.count))
+      .attr("fill", "#007acc")
+      .attr("opacity", (d) => (d.count < 5 ? 0.5 : 1))
+      .append("title")
+      .text((d) => `Svar: ${d.count}`);
+  }
 };
 
-// Justera bredd på mount
-onMounted(() => {
+// Sätt grafbredd när komponenten mountas
+const resizeAndDraw = () => {
   nextTick(() => {
     if (wrapperRef.value) {
       width.value = wrapperRef.value.clientWidth;
     }
     drawGraph();
   });
+};
+
+// Kör när komponenten laddas
+onMounted(() => {
+  resizeAndDraw();
+  window.addEventListener("resize", resizeAndDraw);
 });
 
-// Rita om när data ändras
+// Ta bort resize-listener
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", resizeAndDraw);
+});
+
+// Rita om när datan ändras
 watch(() => props.entries, drawGraph, { deep: true });
 </script>
 

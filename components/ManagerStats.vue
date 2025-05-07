@@ -28,6 +28,8 @@ import { useManagerStats } from "@/composables/useManagerStats";
 import HealthGraph from "@/components/HealthGraph.vue";
 import type { HealthEntry } from "@/types/healthEntry";
 
+type GraphStatEntry = HealthEntry & { entryCount: number };
+
 // Token krävs för fetch
 const token = useStorage("token", "");
 const selectedRange = ref(30);
@@ -46,7 +48,7 @@ const titles: Record<Key, string> = {
 };
 
 // Mappa och filtrera stats → HealthEntry[]
-const graphStats = computed<HealthEntry[]>(() => {
+const graphStats = computed<GraphStatEntry[]>(() => {
   if (!stats.value) return [];
 
   const cutoff = new Date();
@@ -62,6 +64,7 @@ const graphStats = computed<HealthEntry[]>(() => {
       activity: s.averageActivity,
       nutrition: s.averageNutrition,
       date: s.date,
+      entryCount: s.entryCount,
     }));
 });
 </script>
