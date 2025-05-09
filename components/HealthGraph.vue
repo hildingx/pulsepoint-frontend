@@ -1,6 +1,9 @@
 <template>
-  <div ref="wrapperRef" class="graph-wrapper">
-    <svg ref="svgRef" :width="width" :height="height"></svg>
+  <div class="rounded-xl bg-white shadow-sm p-4">
+    <h4 class="text-lg font-semibold text-gray-800 mb-2">{{ title }}</h4>
+    <div ref="wrapperRef" class="graph-wrapper">
+      <svg ref="svgRef" :width="width" :height="height"></svg>
+    </div>
   </div>
 </template>
 
@@ -32,7 +35,7 @@ const drawGraph = () => {
   if (!svgRef.value || props.entries.length === 0) return;
 
   interface EntryWithCount extends HealthEntry {
-    entryCount?: number; // gör den optional för säkerhets skull
+    entryCount?: number; // gör den optional
   }
 
   const data = (props.entries as EntryWithCount[]).map((entry) => ({
@@ -90,14 +93,6 @@ const drawGraph = () => {
     .duration(1000)
     .ease(d3.easeLinear)
     .attr("stroke-dashoffset", 0);
-
-  // Titel
-  svg
-    .append("text")
-    .attr("x", width.value / 2)
-    .attr("y", 15)
-    .attr("text-anchor", "middle")
-    .text(props.title);
 
   // Visa datapunkter med storlek/tooltip endast om entryCount finns (t.ex. för managers)
   if (data.some((d) => typeof d.count === "number" && d.count > 0)) {

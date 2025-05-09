@@ -1,82 +1,119 @@
 <template>
-  <form @submit.prevent="handleSubmit" aria-label="Hälsoregistreringsformulär">
-    <h2>Ny hälsoregistrering</h2>
+  <form
+    @submit.prevent="handleSubmit"
+    aria-label="Hälsoregistreringsformulär"
+    class="space-y-6 bg-white p-6 rounded shadow"
+  >
+    <h2 class="text-xl font-semibold text-gray-800">Ny hälsoregistrering</h2>
 
     <!-- Fält: Humör -->
     <div>
-      <label for="mood">Humör: {{ mood }}</label>
+      <label for="mood" class="block font-medium text-gray-700 mb-1">
+        Humör: {{ mood }}
+      </label>
       <input
         id="mood"
         type="range"
         v-model.number="mood"
         min="1"
         max="5"
+        class="w-full accent-blue-600"
         aria-label="Humör"
       />
-      <p>Låg energi eller motivation = 1, positivt och energifylld = 5</p>
+      <p class="text-sm text-gray-500 mt-1">
+        Låg energi eller motivation = 1, positivt och energifylld = 5
+      </p>
     </div>
 
     <!-- Fält: Sömn -->
     <div>
-      <label for="sleep">Sömn: {{ sleep }}</label>
+      <label for="sleep" class="block font-medium text-gray-700 mb-1">
+        Sömn: {{ sleep }}
+      </label>
       <input
         id="sleep"
         type="range"
         v-model.number="sleep"
         min="1"
         max="5"
+        class="w-full accent-blue-600"
         aria-label="Sömn"
       />
-      <p>Orolig eller otillräcklig sömn = 1, utvilad = 5</p>
+      <p class="text-sm text-gray-500 mt-1">
+        Orolig eller otillräcklig sömn = 1, utvilad = 5
+      </p>
     </div>
 
     <!-- Fält: Stress -->
     <div>
-      <label for="stress">Stress: {{ stress }}</label>
+      <label for="stress" class="block font-medium text-gray-700 mb-1">
+        Stress: {{ stress }}
+      </label>
       <input
         id="stress"
         type="range"
         v-model.number="stress"
         min="1"
         max="5"
+        class="w-full accent-blue-600"
         aria-label="Stress"
       />
-      <p>Mycket stress = 1, lugn och fokuserad = 5</p>
+      <p class="text-sm text-gray-500 mt-1">
+        Mycket stress = 1, lugn och fokuserad = 5
+      </p>
     </div>
 
     <!-- Fält: Aktivitet -->
     <div>
-      <label for="activity">Fysisk aktivitet: {{ activity }}</label>
+      <label for="activity" class="block font-medium text-gray-700 mb-1">
+        Fysisk aktivitet: {{ activity }}
+      </label>
       <input
         id="activity"
         type="range"
         v-model.number="activity"
         min="1"
         max="5"
+        class="w-full accent-blue-600"
         aria-label="Fysisk aktivitet"
       />
-      <p>Inte rört dig alls = 1, mycket rörelse/träning = 5</p>
+      <p class="text-sm text-gray-500 mt-1">
+        Inte rört dig alls = 1, mycket rörelse/träning = 5
+      </p>
     </div>
 
     <!-- Fält: Kost -->
     <div>
-      <label for="nutrition">Kost: {{ nutrition }}</label>
+      <label for="nutrition" class="block font-medium text-gray-700 mb-1">
+        Kost: {{ nutrition }}
+      </label>
       <input
         id="nutrition"
         type="range"
         v-model.number="nutrition"
         min="1"
         max="5"
+        class="w-full accent-blue-600"
         aria-label="Kost"
       />
-      <p>Oregelbundet/onyttigt = 1, balanserat och näringsrikt = 5</p>
+      <p class="text-sm text-gray-500 mt-1">
+        Oregelbundet/onyttigt = 1, balanserat och näringsrikt = 5
+      </p>
     </div>
 
-    <button type="submit" :disabled="isSubmitting">
+    <!-- Submit-knapp -->
+    <button
+      type="submit"
+      :disabled="isSubmitting"
+      class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
+    >
       {{ isSubmitting ? "Sparar..." : "Spara" }}
     </button>
 
-    <p v-if="error" style="color: red" role="alert">{{ error }}</p>
+    <!-- Felmeddelande -->
+    <p v-if="error" class="text-red-600 text-sm text-center" role="alert">
+      {{ error }}
+    </p>
   </form>
 </template>
 

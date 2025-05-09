@@ -1,44 +1,50 @@
 <template>
   <div>
-    <nav>
-      <div>
-        <ul>
+    <!-- Navigationsfält -->
+    <nav
+      class="bg-blue-600 text-white px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+    >
+      <div class="flex items-center gap-6">
+        <h1 class="text-xl font-semibold">PulsePoint</h1>
+        <ul class="flex gap-4 text-sm">
           <li>
-            <NuxtLink to="/dashboard">Hem</NuxtLink>
+            <NuxtLink to="/dashboard" class="hover:underline">Hem</NuxtLink>
           </li>
-          <li>
-            <NuxtLink to="/graphs">Statistik</NuxtLink>
+          <li v-if="!isManager">
+            <NuxtLink to="/graphs" class="hover:underline">Statistik</NuxtLink>
           </li>
         </ul>
-        <h1>PulsePoint</h1>
+      </div>
 
-        <!-- Visa användarnamn -->
-        <p v-if="user">
-          Inloggad som: {{ user.userName }}
-          <br />
-          Ditt namn är: {{ user.firstName }}
-          {{ user.lastName }}
-          <br />
-          Din roll är: {{ user.roles.join(", ") }}
+      <!-- Användarinformation och logga ut -->
+      <div v-if="user" class="text-sm text-white/90">
+        <p>
+          Inloggad som <strong>{{ user.userName }}</strong
+          ><br />
+          Roll: {{ user.roles.join(", ") }}
         </p>
-
-        <button @click="logout">Logga ut</button>
+        <button
+          @click="logout"
+          class="mt-2 bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-100 transition"
+        >
+          Logga ut
+        </button>
       </div>
     </nav>
 
-    <!-- Rendera inloggat läge -->
-    <main>
+    <!-- Huvudinnehåll -->
+    <main class="p-6 bg-gray-50 min-h-screen">
       <NuxtPage />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useAuth } from "~~/composables/useAuth"; // Importera auth composable
-import { useUser } from "~~/composables/useUser";
+const { user } = useUser();
+const { logout } = useAuth();
 
-const { user } = await useUser();
-const { logout } = useAuth(); // Använd auth composable för att hantera logout
+// Kollar om användaren har rollen "manager"
+const isManager = computed(
+  () => user.value?.roles.includes("manager") ?? false
+);
 </script>
-
-<style scoped></style>

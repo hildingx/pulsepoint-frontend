@@ -64,14 +64,8 @@ import { ref, computed } from "vue";
 import HealthGraph from "@/components/HealthGraph.vue";
 import { useHealthEntries } from "@/composables/useHealthEntries";
 import type { HealthEntry } from "@/types/healthEntry";
-const { token } = useUser();
 
-definePageMeta({ layout: "default" });
-
-// Skicka användare till startsidan om ingen token
-if (!token.value) {
-  navigateTo("/");
-}
+definePageMeta({ layout: "default", middleware: "auth" });
 
 // Hämta hälsodata via composable
 const { entries, pending, error } = useHealthEntries();

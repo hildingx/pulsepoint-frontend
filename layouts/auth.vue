@@ -1,7 +1,7 @@
+<!-- layouts/auth.vue -->
 <template>
-  <div>
-    <!-- Rendera utloggat läge -->
-    <main>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <main class="w-full max-w-md p-6 bg-white rounded-xl shadow-md">
       <NuxtPage />
     </main>
   </div>

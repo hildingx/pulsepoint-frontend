@@ -1,32 +1,36 @@
 <template>
-  <div>
-    <h2>Välkommen till din dashboard</h2>
+  <div class="space-y-6">
+    <h2 class="text-2xl font-bold text-gray-800">
+      Välkommen till din dashboard
+    </h2>
 
     <!-- Laddar användardata -->
-    <p v-if="!user">Laddar användardata...</p>
+    <p v-if="!user" class="text-gray-600">Laddar användardata...</p>
 
     <template v-else>
       <!-- Manager-vy -->
-      <div v-if="isManager">
-        <h3>Statistik för din arbetsplats (manager)</h3>
+      <div v-if="isManager" class="bg-white p-4 rounded shadow">
         <ManagerStats />
       </div>
 
       <!-- Vanlig användare -->
-      <div v-else>
-        <!-- Laddar hälsoregistreringar -->
-        <p v-if="entriesLoading">Laddar dina tidigare registreringar…</p>
+      <div v-else class="bg-white p-4 rounded shadow">
+        <p v-if="entriesLoading" class="text-gray-600">
+          Laddar dina tidigare registreringar…
+        </p>
 
-        <!-- Felmeddelande vid misslyckad hämtning -->
-        <p v-if="fetchError" style="color: red" role="alert">
+        <p v-if="fetchError" class="text-red-600 font-medium" role="alert">
           Kunde inte hämta hälsodata. Försök igen senare.
         </p>
 
-        <!-- Innehåll baserat på dagens inlämning -->
         <template v-else-if="!entriesLoading">
-          <div v-if="hasSubmittedToday">
-            <h3>Fantastiskt jobbat!</h3>
-            <p>Du har registrerat din hälsa för idag. Vi ses imorgon igen!</p>
+          <div v-if="hasSubmittedToday" class="space-y-2">
+            <h3 class="text-green-700 text-lg font-semibold">
+              Fantastiskt jobbat!
+            </h3>
+            <p class="text-gray-700">
+              Du har registrerat din hälsa för idag. Vi ses imorgon igen!
+            </p>
           </div>
           <div v-else>
             <HealthForm @submitted="onSubmitted" />
@@ -44,7 +48,7 @@ import { useUser } from "@/composables/useUser";
 import HealthForm from "@/components/HealthForm.vue";
 import ManagerStats from "@/components/ManagerStats.vue";
 
-definePageMeta({ layout: "default" });
+definePageMeta({ layout: "default", middleware: "auth" });
 
 // Typ: endast datum för hälsoposter
 interface HealthEntryDateOnly {
@@ -59,11 +63,6 @@ const entries = ref<HealthEntryDateOnly[]>([]);
 const hasSubmittedToday = ref(false);
 const entriesLoading = ref(true);
 const fetchError = ref(false);
-
-// Navigera bort om ej inloggad
-if (!token.value) {
-  navigateTo("/");
-}
 
 // Hämtar användarens hälsodata
 async function fetchEntries(): Promise<void> {

@@ -1,77 +1,88 @@
 <template>
   <div>
-    <h2>Skapa konto</h2>
+    <h2 class="text-2xl font-bold mb-6 text-center">Skapa konto</h2>
 
-    <!-- Registreringsformulär -->
     <form
       v-if="!success"
       @submit.prevent="handleRegister"
       aria-label="Registreringsformulär"
+      class="space-y-4"
     >
       <!-- Förnamn -->
       <div>
-        <label for="firstName">Förnamn</label>
+        <label for="firstName" class="block mb-1 text-sm font-medium"
+          >Förnamn</label
+        >
         <input
           id="firstName"
           v-model="firstName"
           required
-          aria-required="true"
-          aria-label="Förnamn"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
         />
       </div>
 
       <!-- Efternamn -->
       <div>
-        <label for="lastName">Efternamn</label>
+        <label for="lastName" class="block mb-1 text-sm font-medium"
+          >Efternamn</label
+        >
         <input
           id="lastName"
           v-model="lastName"
           required
-          aria-required="true"
-          aria-label="Efternamn"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
         />
       </div>
 
-      <!-- Användarnamn med felmeddelanden -->
+      <!-- Användarnamn -->
       <div>
-        <label for="username">Användarnamn</label>
+        <label for="username" class="block mb-1 text-sm font-medium"
+          >Användarnamn</label
+        >
         <input
           id="username"
           v-model="username"
           required
-          aria-required="true"
-          aria-label="Användarnamn"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
         />
-        <ul v-if="triedToSubmit && usernameErrors.length" style="color: red">
+        <ul
+          v-if="triedToSubmit && usernameErrors.length"
+          class="text-red-600 text-sm mt-1"
+        >
           <li v-for="(err, i) in usernameErrors" :key="i">{{ err }}</li>
         </ul>
       </div>
 
-      <!-- Lösenord med felmeddelanden -->
+      <!-- Lösenord -->
       <div>
-        <label for="password">Lösenord</label>
+        <label for="password" class="block mb-1 text-sm font-medium"
+          >Lösenord</label
+        >
         <input
           id="password"
           type="password"
           v-model="password"
           required
-          aria-required="true"
-          aria-label="Lösenord"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
         />
-        <ul v-if="triedToSubmit && passwordErrors.length" style="color: red">
+        <ul
+          v-if="triedToSubmit && passwordErrors.length"
+          class="text-red-600 text-sm mt-1"
+        >
           <li v-for="(err, i) in passwordErrors" :key="i">{{ err }}</li>
         </ul>
       </div>
 
-      <!-- Välj arbetsplats -->
+      <!-- Arbetsplats -->
       <div>
-        <label for="workplace">Arbetsplats</label>
+        <label for="workplace" class="block mb-1 text-sm font-medium"
+          >Arbetsplats</label
+        >
         <select
           id="workplace"
           v-model="workplaceId"
           required
-          aria-required="true"
-          aria-label="Arbetsplats"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
         >
           <option disabled value="">Välj arbetsplats</option>
           <option v-for="wp in workplaces" :key="wp.id" :value="wp.id">
@@ -80,23 +91,26 @@
         </select>
       </div>
 
-      <!-- Submit-knapp med loading-state och aktiveringslogik -->
+      <!-- Submit -->
       <button
         type="submit"
         :disabled="isLoading || !hasAllFieldsFilled"
-        :aria-disabled="isLoading ? 'true' : 'false'"
+        class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
       >
         {{ isLoading ? "Registrerar…" : "Registrera" }}
       </button>
     </form>
 
-    <!-- Bekräftelsemeddelande -->
-    <p v-if="success" style="color: green">
-      Kontot har skapats! Du kan nu <NuxtLink to="/">logga in.</NuxtLink>
+    <!-- Bekräftelse -->
+    <p v-if="success" class="text-green-600 mt-4 text-center">
+      Kontot har skapats! Du kan nu
+      <NuxtLink to="/" class="text-blue-600 underline">logga in.</NuxtLink>
     </p>
 
-    <!-- Felmeddelande vid misslyckad registrering -->
-    <p v-if="error" style="color: red" role="alert">{{ error }}</p>
+    <!-- Felmeddelande -->
+    <p v-if="error" class="text-red-600 mt-2 text-center" role="alert">
+      {{ error }}
+    </p>
   </div>
 </template>
 
