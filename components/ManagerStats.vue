@@ -1,24 +1,30 @@
 <template>
-  <div class="space-y-6">
-    <h3 class="text-2xl font-semibold text-gray-800">
-      Statistik för din arbetsplats
-      <span v-if="workplaceName">({{ workplaceName }})</span>
-    </h3>
+  <div class="max-w-5xl mx-auto px-4 py-6 space-y-6">
+    <!-- Rubrik -->
+    <h2 class="text-2xl font-semibold text-gray-800 text-center">
+      Statistik för
+      <span v-if="workplaceName" class="text-gray-800">{{
+        workplaceName
+      }}</span>
+    </h2>
 
-    <p v-if="pending" class="text-gray-600">Laddar statistik...</p>
-    <p v-else-if="error" class="text-red-600 font-medium">
+    <!-- Laddar / fel -->
+    <p v-if="pending" class="text-gray-600 text-center">Laddar statistik...</p>
+    <p v-else-if="error" class="text-red-600 font-medium text-center">
       Kunde inte hämta statistik.
     </p>
 
-    <div v-else class="space-y-4">
-      <div>
-        <label for="range" class="block mb-1 text-sm font-medium text-gray-700"
-          >Välj tidsintervall:</label
-        >
+    <!-- Innehåll -->
+    <div v-else class="space-y-6">
+      <!-- Välj tidsintervall -->
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <label for="range" class="text-sm font-medium text-gray-700">
+          Välj tidsintervall:
+        </label>
         <select
           id="range"
           v-model="selectedRange"
-          class="w-full max-w-xs px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:border-blue-400"
+          class="max-w-xs px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:border-blue-400"
         >
           <option value="7">Senaste veckan</option>
           <option value="30">Senaste månaden</option>

@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 class="text-2xl font-bold mb-6 text-center">Skapa konto</h2>
+    <h2 v-if="!success" class="text-2xl font-bold mb-6 text-center">
+      Skapa konto
+    </h2>
 
     <form
       v-if="!success"
@@ -95,7 +97,7 @@
       <button
         type="submit"
         :disabled="isLoading || !hasAllFieldsFilled"
-        class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
+        class="block mx-auto w-full max-w-[150px] bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
       >
         {{ isLoading ? "Registrerar…" : "Registrera" }}
       </button>

@@ -1,30 +1,37 @@
 <template>
-  <div>
-    <h2>Dina hälsografer</h2>
+  <div class="max-w-5xl mx-auto px-4 py-8 space-y-6">
+    <h2 class="text-2xl font-bold text-gray-800 text-center">
+      Utveckling över tid
+    </h2>
 
     <!-- Välj tidsintervall -->
-    <label for="dateRange">Välj tidsintervall:</label>
-    <select
-      v-model="selectedRange"
-      id="dateRange"
-      name="dateRange"
-      aria-label="Välj tidsintervall"
-    >
-      <option value="7">Senaste veckan</option>
-      <option value="30">Senaste månaden</option>
-      <option value="365">Senaste året</option>
-    </select>
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+      <label for="dateRange" class="font-medium text-gray-700"
+        >Välj tidsintervall:</label
+      >
+      <select
+        v-model="selectedRange"
+        id="dateRange"
+        name="dateRange"
+        aria-label="Välj tidsintervall"
+        class="border border-gray-300 rounded px-3 py-2 text-sm"
+      >
+        <option value="7">Senaste veckan</option>
+        <option value="30">Senaste månaden</option>
+        <option value="365">Senaste året</option>
+      </select>
+    </div>
 
-    <!-- Felmeddelande vid misslyckad hämtning -->
-    <p v-if="error" style="color: red" role="alert">
+    <!-- Felmeddelande -->
+    <p v-if="error" class="text-red-600 font-medium" role="alert">
       Kunde inte hämta dina hälsoregistreringar.
     </p>
 
-    <!-- Laddningsmeddelande -->
-    <p v-else-if="pending">Laddar hälsodata...</p>
+    <!-- Laddning -->
+    <p v-else-if="pending" class="text-gray-600">Laddar hälsodata...</p>
 
     <!-- Ingen data -->
-    <p v-else-if="sortedFilteredEntries.length === 0">
+    <p v-else-if="sortedFilteredEntries.length === 0" class="text-gray-600">
       Inga hälsoregistreringar hittades för valt tidsintervall.
     </p>
 

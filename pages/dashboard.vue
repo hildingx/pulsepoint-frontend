@@ -1,7 +1,10 @@
 <template>
   <div class="space-y-6">
-    <h2 class="text-2xl font-bold text-gray-800">
-      Välkommen till din dashboard
+    <h2
+      v-if="!isManager"
+      class="max-w-xl mx-auto text-2xl font-bold text-gray-800"
+    >
+      {{ greeting }}
     </h2>
 
     <!-- Laddar användardata -->
@@ -14,7 +17,7 @@
       </div>
 
       <!-- Vanlig användare -->
-      <div v-else class="bg-white p-4 rounded shadow">
+      <div v-else>
         <p v-if="entriesLoading" class="text-gray-600">
           Laddar dina tidigare registreringar…
         </p>
@@ -24,7 +27,10 @@
         </p>
 
         <template v-else-if="!entriesLoading">
-          <div v-if="hasSubmittedToday" class="space-y-2">
+          <div
+            v-if="hasSubmittedToday"
+            class="space-y-2 text-center max-w-xl mx-auto my-20"
+          >
             <h3 class="text-green-700 text-lg font-semibold">
               Fantastiskt jobbat!
             </h3>
@@ -32,7 +38,7 @@
               Du har registrerat din hälsa för idag. Vi ses imorgon igen!
             </p>
           </div>
-          <div v-else>
+          <div v-else class="max-w-xl mx-auto">
             <HealthForm @submitted="onSubmitted" />
           </div>
         </template>
@@ -120,4 +126,11 @@ async function onSubmitted(): Promise<void> {
 const isManager = computed(
   () => user.value?.roles.includes("manager") ?? false
 );
+
+const greeting = computed(() => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "God morgon!";
+  if (hour < 18) return "God eftermiddag!";
+  return "God kväll!";
+});
 </script>

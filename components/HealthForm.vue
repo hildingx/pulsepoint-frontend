@@ -4,7 +4,7 @@
     aria-label="Hälsoregistreringsformulär"
     class="space-y-6 bg-white p-6 rounded shadow"
   >
-    <h2 class="text-xl font-semibold text-gray-800">Ny hälsoregistrering</h2>
+    <h2 class="text-xl font-semibold text-gray-800">Hur mår du idag?</h2>
 
     <!-- Fält: Humör -->
     <div>
@@ -17,7 +17,7 @@
         v-model.number="mood"
         min="1"
         max="5"
-        class="w-full accent-blue-600"
+        class="w-full accent-sky-600"
         aria-label="Humör"
       />
       <p class="text-sm text-gray-500 mt-1">
@@ -36,7 +36,7 @@
         v-model.number="sleep"
         min="1"
         max="5"
-        class="w-full accent-blue-600"
+        class="w-full accent-sky-600"
         aria-label="Sömn"
       />
       <p class="text-sm text-gray-500 mt-1">
@@ -55,7 +55,7 @@
         v-model.number="stress"
         min="1"
         max="5"
-        class="w-full accent-blue-600"
+        class="w-full accent-sky-600"
         aria-label="Stress"
       />
       <p class="text-sm text-gray-500 mt-1">
@@ -74,7 +74,7 @@
         v-model.number="activity"
         min="1"
         max="5"
-        class="w-full accent-blue-600"
+        class="w-full accent-sky-600"
         aria-label="Fysisk aktivitet"
       />
       <p class="text-sm text-gray-500 mt-1">
@@ -93,7 +93,7 @@
         v-model.number="nutrition"
         min="1"
         max="5"
-        class="w-full accent-blue-600"
+        class="w-full accent-sky-600"
         aria-label="Kost"
       />
       <p class="text-sm text-gray-500 mt-1">
@@ -105,7 +105,7 @@
     <button
       type="submit"
       :disabled="isSubmitting"
-      class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
+      class="mx-auto block bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700 disabled:opacity-50"
     >
       {{ isSubmitting ? "Sparar..." : "Spara" }}
     </button>

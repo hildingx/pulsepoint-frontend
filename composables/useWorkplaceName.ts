@@ -14,12 +14,9 @@ export async function useWorkplaceName() {
     { server: false }
   );
 
-  const workplaces = computed(() => data.value ?? []);
-
   const workplaceName = computed(() => {
-    return (
-      workplaces.value.find((w) => w.id === user.value?.workplaceId)?.name ?? ""
-    );
+    const all = data.value ?? [];
+    return all.find((w) => w.id === user.value?.workplaceId)?.name ?? "";
   });
 
   return { workplaceName };

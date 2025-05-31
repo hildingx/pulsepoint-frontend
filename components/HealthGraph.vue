@@ -1,6 +1,6 @@
 <template>
   <div class="rounded-xl bg-white shadow-sm p-4">
-    <h4 class="text-lg font-semibold text-gray-800 mb-2">{{ title }}</h4>
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ title }}</h3>
     <div ref="wrapperRef" class="graph-wrapper">
       <svg ref="svgRef" :width="width" :height="height"></svg>
     </div>
@@ -94,13 +94,15 @@ const drawGraph = () => {
     .ease(d3.easeLinear)
     .attr("stroke-dashoffset", 0);
 
-  // Visa datapunkter med storlek/tooltip endast om entryCount finns (t.ex. för managers)
+  // Visa datapunkter med storlek/tooltip endast om entryCount finns (för managers)
   if (data.some((d) => typeof d.count === "number" && d.count > 0)) {
     const maxCount = d3.max(data, (d) => d.count) ?? 1;
 
     const rScale = d3.scaleLinear().domain([1, maxCount]).range([2, 8]);
 
-    // Lägg till visuella datapunkter (cirklar) på linjen, där:
+    const formatDate = d3.timeFormat("%Y-%m-%d");
+
+    // Skapa cirklar för varje datapunkt
     // Storleken beror på hur många som svarat (entryCount)
     // Låg svarsfrekvens (< 5) gör punkten halvtransparent
     // Tooltip visar antal svar vid hovring
@@ -115,7 +117,10 @@ const drawGraph = () => {
       .attr("fill", "#007acc")
       .attr("opacity", (d) => (d.count < 5 ? 0.5 : 1))
       .append("title")
-      .text((d) => `Svar: ${d.count}`);
+      .text(
+        (d) =>
+          `Datum: ${formatDate(d.date)}\nVärde: ${d.value}\nSvar: ${d.count}`
+      );
   }
 };
 

@@ -2,11 +2,11 @@
   <div>
     <!-- Navigationsfält -->
     <nav
-      class="bg-blue-600 text-white px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+      class="bg-sky-700 text-white px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
     >
       <div class="flex items-center gap-6">
         <h1 class="text-xl font-semibold">PulsePoint</h1>
-        <ul class="flex gap-4 text-sm">
+        <ul class="flex gap-4 text-base">
           <li>
             <NuxtLink to="/dashboard" class="hover:underline">Hem</NuxtLink>
           </li>
@@ -25,7 +25,7 @@
         </p>
         <button
           @click="logout"
-          class="mt-2 bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-100 transition"
+          class="mt-2 bg-white text-sky-700 px-3 py-1 rounded hover:bg-blue-100 transition"
         >
           Logga ut
         </button>
